@@ -1,3 +1,4 @@
+import { supabase } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
 /**
@@ -15,9 +16,28 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   // TODO: Fetch question from Supabase by params.id
-  
-  return NextResponse.json({ message: 'Not implemented' }, { status: 501 });
-}
+  try {
+    const questionId = params.id;
+
+    const query = supabase
+      .from('questions')
+      .select('*')
+      .eq('id', questionId)
+      .single();
+
+    const { data, error } = await query;
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to fetch question' },
+      { status: 500 });
+  }
+  }
 
 
 
