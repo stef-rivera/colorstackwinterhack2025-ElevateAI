@@ -21,10 +21,10 @@ import { supabase } from '@/lib/supabase';
  */
 export async function GET(
   request: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
-    const userId = params.userId;
+    const { userId } = await params;
 
     // Fetch all attempts for the user
     const { data: attempts, error: attemptsError } = await supabase
