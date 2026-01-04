@@ -53,7 +53,6 @@ export interface Question {
   choices: Choice[] | null;
   correct_answer: string | null;
   explanation: string | null;
-  sort_order: number;
 }
 
 export interface Attempt {
@@ -93,4 +92,9 @@ export interface SectionProgress {
   lessons_total: number;
   lessons_completed: number;
 }
+
+
+
+
+
 

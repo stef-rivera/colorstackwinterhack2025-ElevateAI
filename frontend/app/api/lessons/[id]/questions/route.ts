@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 
 /**
  * GET /api/lessons/:id/questions
  * 
- * Get all questions for a specific lesson, ordered by sort_order
+ * Get all questions for a specific lesson
+ * Questions will be randomized on the frontend
  * 
  * Response: Array of {
  *   id, lesson_id, type, prompt, media_url,
- *   choices, correct_answer, explanation, sort_order
+ *   choices, correct_answer, explanation
  * }
  * 
  * Question types:
@@ -22,9 +24,28 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  // TODO: Fetch questions from Supabase where lesson_id = params.id
-  // TODO: Order by sort_order
-  
-  return NextResponse.json({ message: 'Not implemented' }, { status: 501 });
+  try {
+    const { data, error } = await supabase
+      .from('questions')
+      .select('*')
+      .eq('lesson_id', params.id);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Return questions (frontend will handle randomization)
+    return NextResponse.json(data || []);
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to fetch questions' },
+      { status: 500 }
+    );
+  }
 }
+
+
+
+
+
 
